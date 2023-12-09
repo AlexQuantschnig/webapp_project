@@ -2,7 +2,7 @@
     /* fallback for old browsers */
     background: #6a11cb;
 
-    background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+    background: linear-gradient(to right, #6a11cb, #2575fc)
 }
 
 html {
@@ -11,4 +11,17 @@ html {
 
 body {
     min-height: 100%;
+}
+
+#list1 {
+    border-radius: .75rem;
+}
+
+#add-btn {
+    background-color: #2575fc;
+}
+
+.my-hr {
+    border-color: #2575fc;
+    border-width: 2px;
 }
