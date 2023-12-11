@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
     <title>Time Planner</title>
 </head>
 
@@ -30,14 +30,13 @@
                         <h1 class="text-center text-white">My Todo-s</h1>
                         <div class="pb-2">
                             <div class="card-body">
-                                <div class="d-flex flex-row align-items-center">
-                                    <input type="text" class="form-control form-control-lg"
-                                        id="exampleFormControlInput1" placeholder="Add new...">
-                                    <a href="#!" data-mdb-toggle="tooltip" title="Set due date"><i
-                                            class="fas fa-calendar-alt fa-lg me-3"></i></a>
-                                    <div>
-                                        <button type="button" class="btn text-white btn-lg" id="add-btn">Add</button>
-                                    </div>
+                                <div class="flex-row align-items-center">
+                                    <form class="d-flex" role="search" action="/addTodo" method="post">
+                                        <input name="todoTitle" id="todoTitle" class="form-control form-control-lg me-3"
+                                            type="text" placeholder="Add new...">
+                                        <input type="datetime-local" id="dueDate" name="dueDate" class="me-3 rounded" />
+                                        <button type="submit" class="btn text-white btn-lg" id="add-btn">Add</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
