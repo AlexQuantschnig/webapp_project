@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script defer src="dist/app.js"></script>
+    <script defer src="dist/index.js"></script>
     <title>Time Planner</title>
 </head>
 
@@ -13,7 +15,6 @@
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
             <div class=" container-fluid">
                 <a class="navbar-brand">Time Planner</a>
-                <script src="dist/index.js"></script>
                 <form class="d-flex" role="search" action="/submit-form" method="post">
                     <input name="name" id="name" class="form-control me-2" type="text" placeholder="Search"
                         aria-label="Search">
@@ -31,9 +32,9 @@
                         <div class="pb-2">
                             <div class="card-body">
                                 <div class="flex-row align-items-center">
-                                    <form class="d-flex" role="search" action="/addTodo" method="post">
+                                    <form class="d-flex" role="search" action="/addTodo" method="post" id="addTodoForm">
                                         <input name="todoTitle" id="todoTitle" class="form-control form-control-lg me-3"
-                                            type="text" placeholder="Add new...">
+                                            type="text" placeholder="Add new..." required>
                                         <input type="datetime-local" id="dueDate" name="dueDate" class="me-3 rounded" />
                                         <button type="submit" class="btn text-white btn-lg" id="add-btn">Add</button>
                                     </form>
@@ -55,6 +56,19 @@
                                 <option value="2">Due date</option>
                             </select>
                         </div>
+                        <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
+                            <li
+                                class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
+                                <div class="form-check">
+                                    <input class="form-check-input me-0" type="checkbox" value="" id="flexCheckChecked1"
+                                        aria-label="..." checked />
+                                </div>
+                            </li>
+                            <li
+                                class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
+                                <p class="lead fw-normal mb-0 text-white">Buy groceries for next week</p>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

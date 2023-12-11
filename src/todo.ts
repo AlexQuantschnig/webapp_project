@@ -4,7 +4,7 @@ export class Todo {
     completed: boolean;
     description: string | undefined;
     creationDate: string | undefined;
-    dueDate: string | undefined;
+    dueDate: Date | undefined;
     priority: string | undefined;
 
     constructor(title: string) {

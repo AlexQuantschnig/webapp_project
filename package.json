@@ -2,9 +2,9 @@
   "name": "webapp_project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "dev": "node dist/index.js",
+    "dev": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
