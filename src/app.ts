@@ -64,13 +64,6 @@ app.post('/addTodo', (req, res) => {
 
 });
 
-app.post('/submit-form', (req, res) => {
-    const coin = req.body.name;
-    console.log("coin: ", coin);
-    res.status(200).redirect('/');
-});
-
-
 app.get('/getTodos', (req, res) => {
 
     connection.query('SELECT * FROM todo', (err, result) => {
@@ -78,9 +71,26 @@ app.get('/getTodos', (req, res) => {
             res.send("Error retrieving todos from database");
             return;
         }
-
         console.log(`Retrieved ${result.length} rows`);
         res.status(200).json(result);
+    });
+
+});
+
+app.put('/todos/:id', (req, res) => {
+    const id: number = Number(req.params.id);
+    const completed: number = Number(req.body.completed);
+
+    const query = "UPDATE `todo_app`.`todo` SET `completed` = '?' WHERE (`idTodo` = '?')";
+
+    connection.query(query, [completed, id], (err, result) => {
+        if (err) {
+            res.send("Error updating todo in database");
+            return;
+        }
+
+        console.log(`Updated ${result.affectedRows} row`);
+        res.status(200).send("Success");
     });
 
 });

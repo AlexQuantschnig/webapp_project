@@ -42,20 +42,20 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 
 ### Formulare
 - [x] Textfelder und Textbereiche (input type="text", textarea)
-- [ ] Auswahlmöglichkeiten (checkbox, radio)
+- [x] Auswahlmöglichkeiten (checkbox, radio)
 - [x] Dropdown-Listen (select)
 - [ ] Datei-Upload (input type="file")
 - [x] Schaltflächen (button, input type="submit")
-- [ ] Clientseitige Validierung (required, pattern)
+- [x] Clientseitige Validierung (required, pattern)
 - [x] Serverseitige Validierung und Verarbeitung der Formulardaten
 
 ### JavaScript
 - [x] Variablen und Datentypen
 - [x] Kontrollstrukturen (if-else, loops)
 - [x] Funktionen und Ereignishandling
-- [ ] DOM-Manipulation (Elemente auswählen, ändern, hinzufügen, entfernen)
-- [ ] Asynchrone Operationen (Promises, async/await)
-- [ ] Fetch-API oder Ajax für Serveranfragen
+- [x] DOM-Manipulation (Elemente auswählen, ändern, hinzufügen, entfernen)
+- [x] Asynchrone Operationen (Promises, async/await)
+- [x] Fetch-API oder Ajax für Serveranfragen
 - [ ] Zustandsmanagement (Local Storage, Session Storage)
 
 ### TypeScript (Optional)
@@ -74,10 +74,10 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 - [ ] Deployment der Webseite
 
 ### Datenformate & REST APIs (Optional)
-- [ ] Datenabfrage von einer REST-API
-- [ ] Darstellung der Datenabfrage
+- [x] Datenabfrage von einer REST-API
+- [x] Darstellung der Datenabfrage
 - [ ] Persistieren der Datenabfrage
-- [ ] Verwendung von JSON oder XML für den Datenaustausch
+- [x] Verwendung von JSON oder XML für den Datenaustausch
 
 ### Node.js
 - [x] Initialisierung eines Node.js-Projekts (npm init)
@@ -92,7 +92,7 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 ### Datenbank
 - [x] Auswahl des geeigneten Datenbanktyps (z.B. relational, NoSQL)
 - [x] Erstellung des Datenbankschemas (Tabellenstruktur, Beziehungen)
-- [ ] Implementierung von CRUD-Operationen (Create, Read, Update, Delete)
+- [x] Implementierung von CRUD-Operationen (Create, Read, Update, Delete)
 - [x] Implementierung von Sicherheitsmaßnahmen (z.B. SQL-Injection-Prävention)
 
 ### Dokumentation
