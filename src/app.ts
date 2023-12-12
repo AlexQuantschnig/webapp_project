@@ -2,6 +2,7 @@ import express from "express";
 import mysql from "mysql";
 import dotenv from "dotenv";
 import { Todo } from "./todo";
+import moment from "moment";
 
 
 
@@ -43,12 +44,14 @@ app.post('/addTodo', (req, res) => {
     let query: string;
     let inserts: any[];
 
+    const creationDate: string = moment(Date.now()).format('YYYY-MM-DD HH:mm');
+
     if (todoDueDate === "") {
-        query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`) VALUES (?, ?)";
-        inserts = [Number(todo.completed), todo.title];
+        query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `creationDate`) VALUES (?, ?, ?)";
+        inserts = [Number(todo.completed), todo.title, creationDate];
     } else {
         todo.dueDate = new Date(todoDueDate);
-        query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `dueDate`) VALUES (?, ?, ?)";
+        query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `dueDate`, `creationDate`) VALUES (?, ?, ?, ?)";
         inserts = [Number(todo.completed), todo.title, todo.dueDate];
     }
 
@@ -92,5 +95,21 @@ app.put('/todos/:id', (req, res) => {
         console.log(`Updated ${result.affectedRows} row`);
         res.status(200).send("Success");
     });
+});
 
+app.delete('/deleteTodo/:id', (req, res) => {
+    const id: number = Number(req.params.id);
+    console.log("delete id: ", id);
+
+    const query = "DELETE FROM `todo_app`.`todo` WHERE (`idTodo` = ?);";
+
+    connection.query(query, [id], (err, result) => {
+        if (err) {
+            res.send("Error deleting todo from database");
+            return;
+        }
+
+        console.log(`Deleted ${result.affectedRows} row`);
+        res.status(200).send("Success");
+    });
 });

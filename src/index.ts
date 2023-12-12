@@ -46,9 +46,6 @@ async function handleCheckboxChange(event: Event) {
             completed: checkbox.checked
         })
     });
-
-
-
     const data = response.status;
 
     if (data != 200) {
@@ -57,6 +54,34 @@ async function handleCheckboxChange(event: Event) {
     } else {
         //  window.alert("Success! updated " + data.message);
         window.location.reload();
+    }
+}
+
+async function handleDeleteButtonClick(event: Event) {
+    event.preventDefault();
+
+    if (window.confirm("Are you sure you want to delete this todo?")) {
+        const button = event.target as HTMLInputElement;
+        const id: number = Number(button.id.replace('delete', ''));
+
+        console.log("delete id: ", id);
+
+        const response = await fetch(`/deleteTodo/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = response.status;
+
+        if (data != 200) {
+            console.error(data);
+            window.alert("Something went wrong while deleting the todo!");
+        } else {
+            //  window.alert("Success! updated " + data.message);
+            window.location.reload();
+        }
     }
 }
 
@@ -79,8 +104,13 @@ function generateTodoHTML(todo: any): string {
                         <p class="lead fw-normal mb-0 text-white">${todo.dueDate}</p>
                     </li>
                     <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
-                        <button class="btn bg-transparent">      
+                    <button type="button" class="btn bg-transparent">      
                             <span class="material-symbols-outlined text-white">menu</span>
+                        </button>      
+                    </li>
+                    <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
+                    <button type="button" class="btn bg-transparent deleteBtn" >      
+                            <span class="material-symbols-outlined text-white" id="delete${todo.idTodo}">delete</span>
                         </button>
                     </li> 
                 </ul>
@@ -100,7 +130,7 @@ window.onload = async function () {
 
         if (finishedTodos.length > 0) {
             div.insertAdjacentHTML('beforeend', '<hr class="my-4 my-hr">');
-            div.insertAdjacentHTML('beforeend', '<h2 class="text-white">Finished Todos</h2>');
+            div.insertAdjacentHTML('beforeend', '<h2 class="text-white">Finished Todo-s</h2>');
             const unfinishedTodosHTML = finishedTodos.map(generateTodoHTML).join('');
             div.insertAdjacentHTML('beforeend', unfinishedTodosHTML);
         }
@@ -108,6 +138,11 @@ window.onload = async function () {
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', handleCheckboxChange);
         });
+
+        const deleteButtons = document.querySelectorAll('.deleteBtn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', handleDeleteButtonClick);
+        });
+
     }
 };
-
