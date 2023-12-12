@@ -90,38 +90,73 @@ let todos: any[];
 
 function generateTodoHTML(todo: any): string {
 
+    if (todo.dueDate == null) {
+        todo.dueDate = "";
+    } else {
+        todo.dueDate = new Date(todo.dueDate).toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+        });
+    }
+
     return `
-                <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
-                    <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
-                        <div class="form-check">
-                            <input class="form-check-input me-0" type="checkbox" value="" id="checkBox${todo.idTodo}" ${todo.completed ? 'checked' : ''}  />
-                        </div>
-                    </li>
-                    <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
-                        <p class="lead fw-normal mb-0 text-white">${todo.title}</p>
-                    </li>
-                    <li class="list-group-item py-3 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
-                        <p class="lead fw-normal mb-0 text-white">${todo.dueDate}</p>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
-                    <button type="button" class="btn bg-transparent">      
-                            <span class="material-symbols-outlined text-white">menu</span>
-                        </button>      
-                    </li>
-                    <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
-                    <button type="button" class="btn bg-transparent deleteBtn" >      
-                            <span class="material-symbols-outlined text-white" id="delete${todo.idTodo}">delete</span>
-                        </button>
-                    </li> 
-                </ul>
-            `;
+        <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
+            <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
+                <div class="form-check">
+                    <input class="form-check-input me-0" type="checkbox" value="" id="checkBox${todo.idTodo}" ${todo.completed ? 'checked' : ''}  />
+                </div>
+            </li>
+            <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
+                <p class="lead fw-normal mb-0 text-white">${todo.title}</p>
+            </li>
+            <li class="list-group-item d-flex align-items-center border-0 bg-transparent">
+                <p class="lead fw-normal mb-0 text-white">${todo.dueDate}</p>
+            </li>
+            <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
+                <button type="button" class="btn bg-transparent">      
+                    <span class="material-symbols-outlined text-white">menu</span>
+                </button>      
+            </li>
+            <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
+                <button type="button" class="btn bg-transparent deleteBtn" >      
+                    <span class="material-symbols-outlined text-white" id="delete${todo.idTodo}">delete</span>
+                </button>
+            </li> 
+        </ul>
+    `;
 }
 
 window.onload = async function () {
     const response = await fetch('/getTodos');
     todos = await response.json();
+
+    const select = document.getElementById('sort') as HTMLSelectElement;
+
     const finishedTodos = todos.filter(todo => todo.completed);
     const unfinishedTodos = todos.filter(todo => !todo.completed);
+
+    if (select.value == "1") {
+        finishedTodos.sort((a, b) => {
+            return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
+        });
+        unfinishedTodos.sort((a, b) => {
+            return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
+        });
+    }
+
+    if (select.value == "2") {
+        finishedTodos.sort((a, b) => {
+            return new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime();
+        });
+        unfinishedTodos.sort((a, b) => {
+            return new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime();
+        });
+    }
+
+
     const div = document.querySelector('#todoList') as HTMLElement | null;
 
     if (div) {
@@ -143,6 +178,6 @@ window.onload = async function () {
         deleteButtons.forEach(button => {
             button.addEventListener('click', handleDeleteButtonClick);
         });
-
     }
 };
+

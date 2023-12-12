@@ -52,7 +52,7 @@ app.post('/addTodo', (req, res) => {
     } else {
         todo.dueDate = new Date(todoDueDate);
         query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `dueDate`, `creationDate`) VALUES (?, ?, ?, ?)";
-        inserts = [Number(todo.completed), todo.title, todo.dueDate];
+        inserts = [Number(todo.completed), todo.title, todo.dueDate, creationDate];
     }
 
     connection.query(query, inserts, (err, result) => {
