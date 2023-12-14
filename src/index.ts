@@ -52,7 +52,6 @@ async function handleCheckboxChange(event: Event) {
         console.error(data);
         window.alert("Something went wrong while updating the todo!");
     } else {
-        //  window.alert("Success! updated " + data.message);
         window.location.reload();
     }
 }
@@ -90,10 +89,13 @@ let todos: any[];
 
 function generateTodoHTML(todo: any): string {
 
+
+    let dueDate;
+
     if (todo.dueDate == null) {
-        todo.dueDate = "";
+        dueDate = "";
     } else {
-        todo.dueDate = new Date(todo.dueDate).toLocaleString(undefined, {
+        dueDate = new Date(todo.dueDate).toLocaleString(undefined, {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -113,7 +115,7 @@ function generateTodoHTML(todo: any): string {
                 <p class="lead fw-normal mb-0 text-white">${todo.title}</p>
             </li>
             <li class="list-group-item d-flex align-items-center border-0 bg-transparent">
-                <p class="lead fw-normal mb-0 text-white">${todo.dueDate}</p>
+                <p class="lead fw-normal mb-0 text-white">${dueDate}</p>
             </li>
             <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
                 <button type="button" class="btn bg-transparent">      
@@ -130,37 +132,60 @@ function generateTodoHTML(todo: any): string {
 }
 
 window.onload = async function () {
+
+    let todos = await fetchTodos();
+    const select = document.querySelector('#sort') as HTMLSelectElement;
+
+    select.addEventListener('change', async function (event: Event) {
+        event.preventDefault();
+        const select = event.target as HTMLSelectElement;
+        console.log(select.value);
+        todos = sortTodos(todos, select);
+        await loadTodoTable(todos);
+    });
+
+    console.log(select.value);
+    todos = sortTodos(todos, select);
+    await loadTodoTable(todos);
+};
+
+
+async function fetchTodos() {
     const response = await fetch('/getTodos');
     todos = await response.json();
+    return todos;
+}
 
-    const select = document.getElementById('sort') as HTMLSelectElement;
+
+
+function sortTodos(todos: any[], select: HTMLSelectElement) {
+
+    if (select.value == "dueDate") {
+        todos.sort((a, b) => (a.dueDate > b.dueDate) ? 1 : -1);
+        return todos;
+    }
+
+    if (select.value == "creationDate") {
+        todos.sort((a, b) => (a.creationDate > b.creationDate) ? 1 : -1);
+        return todos;
+    }
+
+    return todos;
+}
+
+
+
+async function loadTodoTable(todos: any[]) {
 
     const finishedTodos = todos.filter(todo => todo.completed);
     const unfinishedTodos = todos.filter(todo => !todo.completed);
 
-    if (select.value == "1") {
-        finishedTodos.sort((a, b) => {
-            return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
-        });
-        unfinishedTodos.sort((a, b) => {
-            return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
-        });
-    }
-
-    if (select.value == "2") {
-        finishedTodos.sort((a, b) => {
-            return new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime();
-        });
-        unfinishedTodos.sort((a, b) => {
-            return new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime();
-        });
-    }
-
-
-    const div = document.querySelector('#todoList') as HTMLElement | null;
+    const div = document.querySelector('#todoDiv') as HTMLElement | null;
 
     if (div) {
+        div.innerHTML = '';
         const todoHTML = unfinishedTodos.map(generateTodoHTML).join('');
+
         div.insertAdjacentHTML('beforeend', todoHTML);
 
         if (finishedTodos.length > 0) {
@@ -169,6 +194,7 @@ window.onload = async function () {
             const unfinishedTodosHTML = finishedTodos.map(generateTodoHTML).join('');
             div.insertAdjacentHTML('beforeend', unfinishedTodosHTML);
         }
+
         const checkboxes = document.querySelectorAll('.form-check-input');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', handleCheckboxChange);
@@ -179,5 +205,7 @@ window.onload = async function () {
             button.addEventListener('click', handleDeleteButtonClick);
         });
     }
-};
+
+}
+
 
