@@ -1,95 +1,12 @@
+import { Todo } from "./todo.js";
+import * as handler from "./event_handler.js";
+
 const form = document.getElementById('addTodoForm') as HTMLFormElement;
+handler.addFormEventListener(form);
 
-form.addEventListener('submit', async function (event: Event) {
+let todos: Todo[];
 
-    event.preventDefault();
-
-    const todoTitle = (this.elements.namedItem('todoTitle') as HTMLInputElement).value;
-    const dueDate = (this.elements.namedItem('dueDate') as HTMLInputElement).value;
-
-    const response = await fetch('/addTodo', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            todoTitle: todoTitle,
-            dueDate: dueDate,
-        })
-    });
-
-    const data = await response.json();
-
-    if (data.error) {
-        console.error(data.error);
-        window.alert("Something went wrong while adding a todo!");
-    } else {
-        window.location.reload();
-        console.log("Success! added" + data.message);
-        window.alert("Success! added " + data.message);
-    }
-});
-
-async function handleCheckboxChange(event: Event) {
-    event.preventDefault();
-    const checkbox = event.target as HTMLInputElement;
-    const id: number = Number(checkbox.id.replace('checkBox', ''));
-
-    console.log("checkbox id: ", id);
-
-    const response = await fetch(`/todos/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            completed: checkbox.checked
-        })
-    });
-    const data = response.status;
-
-    if (data != 200) {
-        console.error(data);
-        window.alert("Something went wrong while updating the todo!");
-    } else {
-        window.location.reload();
-    }
-}
-
-async function handleDeleteButtonClick(event: Event) {
-    event.preventDefault();
-
-    if (window.confirm("Are you sure you want to delete this todo?")) {
-        const button = event.target as HTMLInputElement;
-        const id: number = Number(button.id.replace('delete', ''));
-
-        console.log("delete id: ", id);
-
-        const response = await fetch(`/deleteTodo/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = response.status;
-
-        if (data != 200) {
-            console.error(data);
-            window.alert("Something went wrong while deleting the todo!");
-        } else {
-            //  window.alert("Success! updated " + data.message);
-            window.location.reload();
-        }
-    }
-}
-
-
-let todos: any[];
-
-function generateTodoHTML(todo: any): string {
-
-
+function generateTodoHTML(todo: Todo): string {
     let dueDate;
 
     if (todo.dueDate == null) {
@@ -135,33 +52,30 @@ window.onload = async function () {
 
     let todos = await fetchTodos();
     const select = document.querySelector('#sort') as HTMLSelectElement;
-
-    select.addEventListener('change', async function (event: Event) {
-        event.preventDefault();
-        const select = event.target as HTMLSelectElement;
-        console.log(select.value);
-        todos = sortTodos(todos, select);
-        await loadTodoTable(todos);
-    });
-
-    console.log(select.value);
+    todos = await handler.handleSelectChange(select, todos);
     todos = sortTodos(todos, select);
     await loadTodoTable(todos);
 };
 
-
-async function fetchTodos() {
+async function fetchTodos():Promise<Todo[]> {
     const response = await fetch('/getTodos');
     todos = await response.json();
     return todos;
 }
 
-
-
-function sortTodos(todos: any[], select: HTMLSelectElement) {
+export function sortTodos(todos: Todo[], select: HTMLSelectElement) {
 
     if (select.value == "dueDate") {
-        todos.sort((a, b) => (a.dueDate > b.dueDate) ? 1 : -1);
+        todos.sort((a, b) =>{
+            if (a.dueDate == null) {
+                return 1;
+            }
+            if (b.dueDate == null) {
+                return -1;
+            }
+            
+            return (a.dueDate > b.dueDate) ? 1 : -1;
+        });
         return todos;
     }
 
@@ -169,13 +83,10 @@ function sortTodos(todos: any[], select: HTMLSelectElement) {
         todos.sort((a, b) => (a.creationDate > b.creationDate) ? 1 : -1);
         return todos;
     }
-
     return todos;
 }
 
-
-
-async function loadTodoTable(todos: any[]) {
+export async function loadTodoTable(todos: Todo[]) {
 
     const finishedTodos = todos.filter(todo => todo.completed);
     const unfinishedTodos = todos.filter(todo => !todo.completed);
@@ -197,15 +108,12 @@ async function loadTodoTable(todos: any[]) {
 
         const checkboxes = document.querySelectorAll('.form-check-input');
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', handleCheckboxChange);
+            checkbox.addEventListener('change',handler.handleCheckboxChange);
         });
 
         const deleteButtons = document.querySelectorAll('.deleteBtn');
         deleteButtons.forEach(button => {
-            button.addEventListener('click', handleDeleteButtonClick);
+            button.addEventListener('click', handler.handleDeleteButtonClick);
         });
     }
-
 }
-
-

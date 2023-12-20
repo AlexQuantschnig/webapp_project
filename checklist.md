@@ -76,7 +76,7 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 ### Datenformate & REST APIs (Optional)
 - [x] Datenabfrage von einer REST-API
 - [x] Darstellung der Datenabfrage
-- [ ] Persistieren der Datenabfrage
+- [x] Persistieren der Datenabfrage
 - [x] Verwendung von JSON oder XML für den Datenaustausch
 
 ### Node.js

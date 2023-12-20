@@ -1,19 +1,15 @@
 export class Todo {
-    id: number | undefined;
+    idTodo: number | undefined;
     title: string;
     completed: boolean;
     description: string | undefined;
-    creationDate: string | undefined;
+    creationDate: string;
     dueDate: Date | undefined;
     priority: string | undefined;
 
-    constructor(title: string) {
+    constructor(title: string, creationDate: string) {
         this.title = title;
+        this.creationDate = creationDate;
         this.completed = false;
     }
-
-    markAsCompleted(): void {
-        this.completed = true;
-    }
-
 }

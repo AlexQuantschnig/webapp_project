@@ -1,7 +1,7 @@
 import express from "express";
 import mysql from "mysql";
 import dotenv from "dotenv";
-import { Todo } from "./todo";
+import { Todo } from "./todo.js";
 import moment from "moment";
 
 
@@ -40,19 +40,23 @@ app.post('/addTodo', (req, res) => {
 
     const todoTitle: string = req.body.todoTitle;
     const todoDueDate: string = req.body.dueDate;
-    const todo = new Todo(todoTitle);
+
+  
+ const creationDate: string = moment(Date.now()).format('YYYY-MM-DD HH:mm');
+
+    const todo = new Todo(todoTitle, creationDate);
     let query: string;
     let inserts: any[];
 
-    const creationDate: string = moment(Date.now()).format('YYYY-MM-DD HH:mm');
+   
 
     if (todoDueDate === "") {
         query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `creationDate`) VALUES (?, ?, ?)";
-        inserts = [Number(todo.completed), todo.title, creationDate];
+        inserts = [Number(todo.completed), todo.title, todo.creationDate];
     } else {
         todo.dueDate = new Date(todoDueDate);
         query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `dueDate`, `creationDate`) VALUES (?, ?, ?, ?)";
-        inserts = [Number(todo.completed), todo.title, todo.dueDate, creationDate];
+        inserts = [Number(todo.completed), todo.title, todo.dueDate, todo.creationDate];
     }
 
     connection.query(query, inserts, (err, result) => {
