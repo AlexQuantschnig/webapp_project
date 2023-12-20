@@ -35,8 +35,8 @@ function generateTodoHTML(todo: Todo): string {
                 <p class="lead fw-normal mb-0 text-white">${dueDate}</p>
             </li>
             <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
-                <button type="button" class="btn bg-transparent">      
-                    <span class="material-symbols-outlined text-white">menu</span>
+                <button type="button" class="btn bg-transparent menuBtn">      
+                    <span class="material-symbols-outlined text-white" id="menu${todo.idTodo}">menu</span>
                 </button>      
             </li>
             <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
@@ -115,5 +115,56 @@ export async function loadTodoTable(todos: Todo[]) {
         deleteButtons.forEach(button => {
             button.addEventListener('click', handler.handleDeleteButtonClick);
         });
+
+        const menuButtons = document.querySelectorAll('.menuBtn');
+        menuButtons.forEach(button => {
+        button.addEventListener('click', () => showModal("This is a modal"));
+        });
     }
+}
+
+function createModal(content: string) {
+    const modalHTML = `
+        <div class="modal" id="modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                     <div class="modal-header">
+                     <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close closeModal" aria-label="Close"></button>
+                    </div>
+                        <div class="modal-body">
+                     <p>Modal body text goes here.</p>
+                    </div>
+                         <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary closeModal" >Close</button>
+                         <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+             </div>
+          </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function showModal(content: string) {
+    createModal(content);
+
+    const modal = document.getElementById('modal') as HTMLElement;
+    const closeModalBtns = document.querySelectorAll('.closeModal');
+
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    });
+
+
+    modal.style.display = 'block';
+
+    window.addEventListener('click', (event) => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
 }
