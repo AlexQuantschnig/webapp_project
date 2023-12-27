@@ -41,20 +41,20 @@ app.post('/addTodo', (req, res) => {
     const todoTitle: string = req.body.todoTitle;
     const todoDueDate: string = req.body.dueDate;
 
-  
- const creationDate: string = moment(Date.now()).format('YYYY-MM-DD HH:mm');
 
-    const todo = new Todo(todoTitle, creationDate);
+    const creationDate: string = moment(Date.now()).format('YYYY-MM-DD HH:mm');
+
+    const todo = new Todo(todoTitle, creationDate, false, undefined, undefined, undefined);
     let query: string;
     let inserts: any[];
 
-   
+
 
     if (todoDueDate === "") {
         query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `creationDate`) VALUES (?, ?, ?)";
         inserts = [Number(todo.completed), todo.title, todo.creationDate];
     } else {
-        todo.dueDate = new Date(todoDueDate);
+        todo.dueDate = todoDueDate;
         query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `dueDate`, `creationDate`) VALUES (?, ?, ?, ?)";
         inserts = [Number(todo.completed), todo.title, todo.dueDate, todo.creationDate];
     }
@@ -69,6 +69,30 @@ app.post('/addTodo', (req, res) => {
         res.status(200).json({ message: `${todo.title}` });
     });
 
+});
+
+app.get('/getTodo/:id', (req, res) => {
+    const id: number = Number(req.params.id);
+    console.log("get id: ", id);
+
+    connection.query('SELECT * FROM todo WHERE idTodo = ?', [id], (err, result) => {
+        if (err) {
+            res.send("Error retrieving todo from database");
+            return;
+        }
+        const row = result[0];
+        console.log("retrieved row", row.dueDate);
+        const todo = new Todo(
+            row.title,
+            row.creationDate,
+            row.completed,
+            row.description,
+            row.dueDate,
+            row.idTodo
+        );
+        console.log("retrieved todo", todo);
+        res.status(200).json(todo);
+    });
 });
 
 app.get('/getTodos', (req, res) => {
@@ -98,6 +122,25 @@ app.put('/todos/:id', (req, res) => {
 
         console.log(`Updated ${result.affectedRows} row`);
         res.status(200).send("Success");
+    });
+});
+
+app.put('/updateDescription/:id', (req, res) => {
+    const id: number = Number(req.params.id);
+    const description: string = req.body.description;
+    console.log("update id: ", id);
+    console.log("update description: ", description);
+
+    const query = "UPDATE `todo_app`.`todo` SET `description` = ? WHERE (`idTodo` = ?)";
+
+    connection.query(query, [description, id], (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        console.log(`Updated ${result.affectedRows} row`);
+        res.status(200);
     });
 });
 

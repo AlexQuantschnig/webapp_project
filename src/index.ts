@@ -7,19 +7,7 @@ handler.addFormEventListener(form);
 let todos: Todo[];
 
 function generateTodoHTML(todo: Todo): string {
-    let dueDate;
-
-    if (todo.dueDate == null) {
-        dueDate = "";
-    } else {
-        dueDate = new Date(todo.dueDate).toLocaleString(undefined, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric'
-        });
-    }
+    const dueDate = formatDate(todo.dueDate);
 
     return `
         <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
@@ -35,14 +23,18 @@ function generateTodoHTML(todo: Todo): string {
                 <p class="lead fw-normal mb-0 text-white">${dueDate}</p>
             </li>
             <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
-                <button type="button" class="btn bg-transparent menuBtn">      
+          
+            <button type="button" class="btn bg-transparent menuBtn" id="menu">      
                     <span class="material-symbols-outlined text-white" id="menu${todo.idTodo}">menu</span>
-                </button>      
+                </button>
+                   
             </li>
             <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
+              
                 <button type="button" class="btn bg-transparent deleteBtn" >      
                     <span class="material-symbols-outlined text-white" id="delete${todo.idTodo}">delete</span>
                 </button>
+                
             </li> 
         </ul>
     `;
@@ -57,7 +49,7 @@ window.onload = async function () {
     await loadTodoTable(todos);
 };
 
-async function fetchTodos():Promise<Todo[]> {
+async function fetchTodos(): Promise<Todo[]> {
     const response = await fetch('/getTodos');
     todos = await response.json();
     return todos;
@@ -66,14 +58,14 @@ async function fetchTodos():Promise<Todo[]> {
 export function sortTodos(todos: Todo[], select: HTMLSelectElement) {
 
     if (select.value == "dueDate") {
-        todos.sort((a, b) =>{
+        todos.sort((a, b) => {
             if (a.dueDate == null) {
                 return 1;
             }
             if (b.dueDate == null) {
                 return -1;
             }
-            
+
             return (a.dueDate > b.dueDate) ? 1 : -1;
         });
         return todos;
@@ -108,7 +100,7 @@ export async function loadTodoTable(todos: Todo[]) {
 
         const checkboxes = document.querySelectorAll('.form-check-input');
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change',handler.handleCheckboxChange);
+            checkbox.addEventListener('change', handler.handleCheckboxChange);
         });
 
         const deleteButtons = document.querySelectorAll('.deleteBtn');
@@ -116,39 +108,91 @@ export async function loadTodoTable(todos: Todo[]) {
             button.addEventListener('click', handler.handleDeleteButtonClick);
         });
 
-        const menuButtons = document.querySelectorAll('.menuBtn');
+        const menuButtons = document.querySelectorAll(".menuBtn");
         menuButtons.forEach(button => {
-        button.addEventListener('click', () => showModal("This is a modal"));
+            button.addEventListener('click', function (event: Event) {
+                handler.handleMenuButtonClick(event);
+            });
         });
     }
 }
 
-function createModal(content: string) {
+function formatDate(date: string | undefined): string {
+
+    if (date == null) {
+        return "";
+    }
+
+    return new Date(date).toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+    });
+}
+
+function createModal(todo: Todo) {
+
+    const dueDate = formatDate(todo.dueDate);
+    const creationDate = formatDate(todo.creationDate);
+
     const modalHTML = `
         <div class="modal" id="modal" tabindex="-1">
             <div class="modal-dialog">
-                <div class="modal-content">
-                     <div class="modal-header">
-                     <h5 class="modal-title">Modal title</h5>
+                <div class="modal-content"> 
+                    <form method="post" action="/updateDesctiption/${todo.idTodo}" id="descriptionForm">
+                     <div class="modal-header">  
+                        
+                     <h5 class="modal-title">${todo.title}</h5>
                     <button type="button" class="btn-close closeModal" aria-label="Close"></button>
                     </div>
                         <div class="modal-body">
-                     <p>Modal body text goes here.</p>
+                        <table class="table table-dark table-striped">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Description</th>
+                                    <td>
+                              
+                                    <input name="description" id="description" class="form-control form-control-sl me-3"
+                                    type="text" placeholder="${todo.description == null ? "Add a description ..." : todo.description}">
+                                    </td>
+                                  
+                                </tr>
+                                <tr>
+                                    <th scope="row">Creation Date</th>
+                                    <td>${creationDate}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Due Date</th>
+                                    <td>${dueDate}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                          <div class="modal-footer">
                         <button type="button" class="btn btn-secondary closeModal" >Close</button>
-                         <button type="button" class="btn btn-primary">Save changes</button>
+                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
+                    </form>
                 </div>
              </div>
           </div>
     `;
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+    const descriptionForm = document.getElementById('descriptionForm') as HTMLFormElement;
+    handler.addDescription(descriptionForm, todo.idTodo!);
 }
 
-function showModal(content: string) {
-    createModal(content);
+export function showModal(todo: Todo) {
+
+    const oldModal = document.getElementById('modal');
+    if (oldModal) {
+        oldModal.remove();
+    }
+
+    createModal(todo);
 
     const modal = document.getElementById('modal') as HTMLElement;
     const closeModalBtns = document.querySelectorAll('.closeModal');
