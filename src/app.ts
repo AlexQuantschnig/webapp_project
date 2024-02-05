@@ -20,6 +20,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 
+
+//Create connection to the DB 
 const connection = mysql.createConnection({
     host: process.env.DBHOST,
     port: Number(process.env.DBPORT),
@@ -36,6 +38,8 @@ connection.connect((err) => {
     console.log('Connection established');
 });
 
+
+//add Todo to the database
 app.post('/addTodo', (req, res) => {
 
     const todoTitle: string = req.body.todoTitle;
@@ -49,7 +53,7 @@ app.post('/addTodo', (req, res) => {
     let inserts: any[];
 
 
-
+    //if no due date is provided, insert todo without due date
     if (todoDueDate === "") {
         query = "INSERT INTO `todo_app`.`todo` (`completed`, `title`, `creationDate`) VALUES (?, ?, ?)";
         inserts = [Number(todo.completed), todo.title, todo.creationDate];
@@ -59,6 +63,7 @@ app.post('/addTodo', (req, res) => {
         inserts = [Number(todo.completed), todo.title, todo.dueDate, todo.creationDate];
     }
 
+    //insert todo into database
     connection.query(query, inserts, (err, result) => {
         if (err) {
             res.send("Error inserting todo into database");
@@ -71,6 +76,7 @@ app.post('/addTodo', (req, res) => {
 
 });
 
+//get todo by id
 app.get('/getTodo/:id', (req, res) => {
     const id: number = Number(req.params.id);
     console.log("get id: ", id);
@@ -95,6 +101,7 @@ app.get('/getTodo/:id', (req, res) => {
     });
 });
 
+//get all todos from the database
 app.get('/getTodos', (req, res) => {
 
     connection.query('SELECT * FROM todo', (err, result) => {
@@ -108,6 +115,7 @@ app.get('/getTodos', (req, res) => {
 
 });
 
+//update todo completion status
 app.put('/todos/:id', (req, res) => {
     const id: number = Number(req.params.id);
     const completed: number = Number(req.body.completed);
@@ -125,6 +133,7 @@ app.put('/todos/:id', (req, res) => {
     });
 });
 
+//update todo description
 app.put('/updateDescription/:id', (req, res) => {
     const id: number = Number(req.params.id);
     const description: string = req.body.description;
@@ -144,6 +153,7 @@ app.put('/updateDescription/:id', (req, res) => {
     });
 });
 
+//delete todo by id
 app.delete('/deleteTodo/:id', (req, res) => {
     const id: number = Number(req.params.id);
     console.log("delete id: ", id);

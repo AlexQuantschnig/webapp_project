@@ -18,7 +18,7 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 - [x] Zielgruppenanalyse
 - [x] Auswahl der Technologien und Tools
 - [x] Initialisierung des Projektrepositoriums (Git)
-- [x] Erstellung eines Zeitplans
+- [ ] Erstellung eines Zeitplans
 - [x] kontinuierliche Bearbeitung und Nutzung von Git
 
 ### HTML (Hypertext Markup Language)
@@ -108,6 +108,6 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 
 ### Dokumentation
 
-- [ ] Erstellung einer Projekt-Dokumentation gemäß den Kursrichtlinien
-- [ ] Fortlaufende Bearbeitung und Erweiterung der Dokumentation
+- [x] Erstellung einer Projekt-Dokumentation gemäß den Kursrichtlinien
+- [x] Fortlaufende Bearbeitung und Erweiterung der Dokumentation
 - [ ] Einholung von Feedback von Lehrenden und Kolleg:innen
