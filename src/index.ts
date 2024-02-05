@@ -7,20 +7,31 @@ handler.addFormEventListener(form);
 let todos: Todo[];
 
 function generateTodoHTML(todo: Todo): string {
-    const dueDate = formatDate(todo.dueDate);
+    const dueDateDisplay = formatDate(todo.dueDate);
+
+    var overdue = false;
+
+    if (todo.dueDate != null) {
+        const now: number = Date.now();
+        const todoDate: Date = new Date(todo.dueDate);
+        overdue = todoDate.getTime() < now;
+    }
+
+    const textColorClass = overdue ? 'text-danger' : 'text-white';
+    const isCompleted = todo.completed ? 'text-decoration-line-through text-primary' : '';
 
     return `
-        <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
+        <ul class="list-group list-group-horizontal rounded-0 bg-transparent ${isCompleted}">
             <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
                 <div class="form-check">
                     <input class="form-check-input me-0" type="checkbox" value="" id="checkBox${todo.idTodo}" ${todo.completed ? 'checked' : ''}  />
                 </div>
             </li>
             <li class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
-                <p class="lead fw-normal mb-0 text-white">${todo.title}</p>
+                <p class="lead fw-normal mb-0 ${textColorClass} ">${todo.title}</p>
             </li>
             <li class="list-group-item d-flex align-items-center border-0 bg-transparent">
-                <p class="lead fw-normal mb-0 text-white">${dueDate}</p>
+                <p class="lead fw-normal mb-0 ${textColorClass}">${dueDateDisplay}</p>
             </li>
             <li class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
           
@@ -41,7 +52,6 @@ function generateTodoHTML(todo: Todo): string {
 }
 
 window.onload = async function () {
-
     let todos = await fetchTodos();
     const select = document.querySelector('#sort') as HTMLSelectElement;
     todos = await handler.handleSelectChange(select, todos);
@@ -117,6 +127,14 @@ export async function loadTodoTable(todos: Todo[]) {
     }
 }
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    let input = document.getElementById("dueDate") as HTMLInputElement;
+    let now = new Date();
+    let localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    input.min = localDateTime;
+});
+
 function formatDate(date: string | undefined): string {
 
     if (date == null) {
@@ -142,12 +160,12 @@ function createModal(todo: Todo) {
             <div class="modal-dialog">
                 <div class="modal-content"> 
                     <form method="post" action="/updateDesctiption/${todo.idTodo}" id="descriptionForm">
-                     <div class="modal-header">  
+                     <div class="modal-header text-bg-secondary">  
                         
                      <h5 class="modal-title">${todo.title}</h5>
                     <button type="button" class="btn-close closeModal" aria-label="Close"></button>
                     </div>
-                        <div class="modal-body">
+                        <div class="modal-body text-bg-dark">
                         <table class="table table-dark table-striped">
                             <tbody>
                                 <tr>
@@ -170,8 +188,8 @@ function createModal(todo: Todo) {
                             </tbody>
                         </table>
                     </div>
-                         <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary closeModal" >Close</button>
+                         <div class="modal-footer text-bg-secondary">
+                        <button type="button" class="btn btn-danger closeModal" >Close</button>
                          <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
                     </form>

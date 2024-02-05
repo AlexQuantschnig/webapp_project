@@ -51,7 +51,7 @@ export function addDescription(form: HTMLFormElement, todoId: number) {
         if (data.error) {
             console.error(data.error);
             window.alert("Something went wrong while adding a description!");
-        } 
+        }
     });
 }
 
@@ -87,7 +87,6 @@ export async function handleDeleteButtonClick(event: Event) {
     const button = event.target as HTMLInputElement;
     const id: number = Number(button.id.replace('delete', ''));
     if (id === 0) {
-        console.error("li was clicked");
         return;
     }
     if (window.confirm("Are you sure you want to delete this todo?")) {
@@ -118,7 +117,7 @@ export async function handleMenuButtonClick(event: Event) {
     console.log("menu clicked");
     const id: number = Number(button.id.replace('menu', ''));
     if (id === 0) {
-        console.error("li was clicked");
+
         return;
     }
 
