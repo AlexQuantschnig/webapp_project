@@ -49,7 +49,13 @@ Before you begin, ensure you have installed the following:
     DBUSER="User of the DB"
     PORT="Port of the webserver"
     ```
-4. Start the application by typing the follwing command in the terminal:
+4. Create the Database with the SQL Dump:
+    
+    In the root of the repository you will find the file dbdump.sql.
+    Just import this into your db and it will automatically create the database.
+    In my case i was using MYSQL Workbench: **Connect to DB -> Server -> Data Import -> select dbdump.sql**
+
+5. Start the application by typing the follwing command in the terminal:
     ```
     npm run dev 
     ```
@@ -58,3 +64,8 @@ Before you begin, ensure you have installed the following:
 If you follwed the information correctly, you will see that the Server has started on your desired PORT. You can go to the Application by typing `localhost:PORT` in the URL Bar of you Browser.
 
 **The Port should be the one you chose in your `.env` file!**
+
+## Database
+
+The Database is just a simple table with the columns idTodo, title, dueDate, creationDate, completed and description. 
+
