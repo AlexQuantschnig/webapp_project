@@ -6,6 +6,12 @@ handler.addFormEventListener(form);
 
 let todos: Todo[];
 
+/**
+ * Generates HTML markup for a todo item.
+ * 
+ * @param todo - The todo object.
+ * @returns The HTML markup for the todo item.
+ */
 function generateTodoHTML(todo: Todo): string {
     const dueDateDisplay = formatDate(todo.dueDate);
 
@@ -59,12 +65,23 @@ window.onload = async function () {
     await loadTodoTable(todos);
 };
 
+/**
+ * Fetches todos from the server.
+ * @returns A promise that resolves to an array of todos.
+ */
 async function fetchTodos(): Promise<Todo[]> {
     const response = await fetch('/getTodos');
     todos = await response.json();
     return todos;
 }
 
+/**
+ * Sorts an array of todos based on the selected sorting criteria.
+ * 
+ * @param todos - The array of todos to be sorted.
+ * @param select - The HTMLSelectElement representing the sorting criteria.
+ * @returns The sorted array of todos.
+ */
 export function sortTodos(todos: Todo[], select: HTMLSelectElement) {
 
     if (select.value == "dueDate") {
@@ -88,6 +105,12 @@ export function sortTodos(todos: Todo[], select: HTMLSelectElement) {
     return todos;
 }
 
+/**
+ * Loads the todo table with the given todos.
+ * 
+ * @param todos - The array of todos to load.
+ * @returns void
+ */
 export async function loadTodoTable(todos: Todo[]) {
 
     const finishedTodos = todos.filter(todo => todo.completed);
@@ -127,7 +150,7 @@ export async function loadTodoTable(todos: Todo[]) {
     }
 }
 
-
+//Make sure the due date input has the correct min attribute value.
 document.addEventListener('DOMContentLoaded', function () {
     let input = document.getElementById("dueDate") as HTMLInputElement;
     let now = new Date();
@@ -135,6 +158,12 @@ document.addEventListener('DOMContentLoaded', function () {
     input.min = localDateTime;
 });
 
+/**
+ * Formats a date string into a localized date and time string.
+ * 
+ * @param date - The date string to format.
+ * @returns The formatted date and time string.
+ */
 function formatDate(date: string | undefined): string {
 
     if (date == null) {
@@ -150,6 +179,11 @@ function formatDate(date: string | undefined): string {
     });
 }
 
+/**
+ * Creates a modal for displaying a todo item.
+ * 
+ * @param todo - The todo item to display in the modal.
+ */
 function createModal(todo: Todo) {
 
     const dueDate = formatDate(todo.dueDate);
@@ -203,6 +237,10 @@ function createModal(todo: Todo) {
     handler.addDescription(descriptionForm, todo.idTodo!);
 }
 
+/**
+ * Displays a modal with the provided todo information.
+ * @param todo - The todo object to display in the modal.
+ */
 export function showModal(todo: Todo) {
 
     const oldModal = document.getElementById('modal');

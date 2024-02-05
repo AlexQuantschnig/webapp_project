@@ -1,6 +1,16 @@
 import { loadTodoTable, showModal, sortTodos } from "./index.js";
 import { Todo } from "./todo.js";
 
+/**
+ * Adds a form event listener to the specified HTML form element.
+ * When the form is submitted, it prevents the default form submission behavior,
+ * sends a POST request to '/addTodo' with the form data as JSON,
+ * and handles the response accordingly.
+ * If the response contains an error, it logs the error and displays an alert.
+ * If the response is successful, it reloads the page, logs a success message, and displays an alert.
+ * 
+ * @param form - The HTML form element to attach the event listener to.
+ */
 export function addFormEventListener(form: HTMLFormElement) {
     form.addEventListener('submit', async function (event: Event) {
         event.preventDefault();
@@ -32,6 +42,12 @@ export function addFormEventListener(form: HTMLFormElement) {
     });
 }
 
+/**
+ * Adds a description to a todo item.
+ * 
+ * @param form - The HTML form element containing the description input field.
+ * @param todoId - The ID of the todo item.
+ */
 export function addDescription(form: HTMLFormElement, todoId: number) {
     form.addEventListener('submit', async function (event: Event) {
         event.preventDefault();
@@ -56,6 +72,12 @@ export function addDescription(form: HTMLFormElement, todoId: number) {
 }
 
 
+/**
+ * Handles the change event of a checkbox.
+ * 
+ * @param event - The change event.
+ * 
+ */
 export async function handleCheckboxChange(event: Event) {
     event.preventDefault();
     const checkbox = event.target as HTMLInputElement;
@@ -82,6 +104,10 @@ export async function handleCheckboxChange(event: Event) {
     }
 }
 
+/**
+ * Handles the click event of the delete button.
+ * @param event - The click event.
+ */
 export async function handleDeleteButtonClick(event: Event) {
     event.preventDefault();
     const button = event.target as HTMLInputElement;
@@ -110,6 +136,10 @@ export async function handleDeleteButtonClick(event: Event) {
     }
 }
 
+/**
+ * Handles the click event of the menu button.
+ * @param event - The click event.
+ */
 export async function handleMenuButtonClick(event: Event) {
     event.preventDefault();
     const button = event.target as HTMLButtonElement;
@@ -144,6 +174,13 @@ export async function handleMenuButtonClick(event: Event) {
 
 
 
+/**
+ * Handles the change event of a select element.
+ * 
+ * @param select - The HTMLSelectElement to handle the change event for.
+ * @param todos - The array of todos to be updated.
+ * @returns A Promise that resolves to the updated array of todos.
+ */
 export async function handleSelectChange(select: HTMLSelectElement, todos: Todo[]): Promise<Todo[]> {
 
     select.addEventListener('change', async function (event: Event) {
